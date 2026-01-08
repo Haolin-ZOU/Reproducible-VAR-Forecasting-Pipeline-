@@ -1,0 +1,32 @@
+{
+  "derivations": [
+    {
+      "deriv_name": ["y_raw"],
+      "depends": [],
+      "decoder": {},
+      "type": ["rxp_py"],
+      "noop_build": [false]
+    },
+    {
+      "deriv_name": ["x_raw"],
+      "depends": [],
+      "decoder": {},
+      "type": ["rxp_py"],
+      "noop_build": [false]
+    },
+    {
+      "deriv_name": ["preds_json"],
+      "depends": ["y_raw", "x_raw"],
+      "decoder": ["pickle.load"],
+      "type": ["rxp_py"],
+      "noop_build": [false]
+    },
+    {
+      "deriv_name": ["cells_zip"],
+      "depends": ["y_raw", "x_raw"],
+      "decoder": ["pickle.load"],
+      "type": ["rxp_py"],
+      "noop_build": [false]
+    }
+  ]
+}
