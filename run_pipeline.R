@@ -1,27 +1,25 @@
 # run_pipeline.R
-# One-command entrypoint:
-#   nix-shell --run "Rscript run_pipeline.R"
-#
-# It will produce:
-#   - pipeline-output/   (rixpress build outputs)
-#   - artifacts/         (notebook-style figures/text + metrics.json)
-
 library(rixpress)
 
-# 1) Define the rixpress DAG
 source("gen-pipeline.R")
 
 message("Build process started...")
 rxp_make()
 message("✓ rixpress build completed")
 
-# 2) Copy pipeline outputs to a stable folder name
-# IMPORTANT: keep this folder name stable across OS and scripts
-rxp_copy(path = "pipeline-output", overwrite = TRUE)
+# Your rixpress version: rxp_copy() takes NO (path/overwrite) args
+rxp_copy()
+
+# Normalize folder name to stable: ./pipeline-output
+if (dir.exists("pipeline-outputs") && !dir.exists("pipeline-output")) {
+  file.rename("pipeline-outputs", "pipeline-output")
+}
+
+if (!dir.exists("pipeline-output")) {
+  stop("rxp_copy() finished but ./pipeline-output was not found. Check which folder was created.")
+}
 message("✓ copied to ./pipeline-output")
 
-# 3) Export notebook-style artifacts via Python
-# (this is the “human-facing report outputs”)
 cmd <- paste(
   "python -m pipeline.export_outputs",
   "--x_path data/raw/x.xlsx",
@@ -35,10 +33,8 @@ cmd <- paste(
 
 message("Running: ", cmd)
 status <- system(cmd)
-if (status != 0) {
-  stop("export_outputs failed with status: ", status)
-}
+if (status != 0) stop("export_outputs failed with status: ", status)
 
 message("Done.")
-message("  - Rixpress outputs: ./pipeline-output")
-message("  - Report artifacts : ./artifacts (see metrics.json)")
+message("  - rixpress outputs: ./pipeline-output")
+message("  - report outputs  : ./artifacts")
