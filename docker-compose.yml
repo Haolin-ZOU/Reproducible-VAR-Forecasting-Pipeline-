@@ -1,15 +1,7 @@
 services:
-  hw2:
-    build: .
-    container_name: rap_hw2
-    working_dir: /app
-    volumes:
-      - .:/app
-    command: bash -lc 'nix-shell --run "Rscript run_pipeline.R"'
-
-  test:
+  pipeline:
     build: .
     working_dir: /app
     volumes:
       - .:/app
-    command: bash -lc 'nix-shell --run "pytest -q"'
+    command: nix-shell --run "Rscript run_pipeline.R"

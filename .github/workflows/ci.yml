@@ -7,15 +7,28 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Install Nix
         uses: cachix/install-nix-action@v30
 
-      - name: Run unit tests
-        run: nix-shell --run "pytest -q"
+      # Optional: show nix version for debugging
+      - name: Show Nix version
+        run: nix --version
 
-      - name: Smoke run pipeline
-        run: nix-shell --run "Rscript run_pipeline.R"
+      - name: Run unit tests (pytest)
+        run: nix-shell -A shell --run "pytest -q"
 
+      - name: Smoke run pipeline (rixpress + export artifacts)
+        run: nix-shell -A shell --run "Rscript run_pipeline.R"
+
+      - name: Verify key outputs exist
+        run: |
+          test -f artifacts/metrics.json
+          test -f artifacts/cell_03_pair_and_lag/acf_pacf_train.png
+          test -f artifacts/cell_04_recursive_forecast/recursive_forecast_level.png
+          test -f pipeline-output/cells_zip
+          echo "OK: key outputs exist."

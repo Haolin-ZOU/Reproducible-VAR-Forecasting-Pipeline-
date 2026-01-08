@@ -3,22 +3,28 @@
 
 # Python
 __pycache__/
-*.pyc
-*.pyo
-
-# Pytest
+*.py[cod]
 .pytest_cache/
+.mypy_cache/
+.venv/
+.env
 
 # R
 .Rhistory
 .RData
 .Rproj.user/
 
-# rixpress build artifacts
-pipeline-output/
-_rixpress/build_log_*.json
-
-# Generated outputs (keep repo clean)
+# Outputs / artifacts
 artifacts/
 artifacts_hw2/
+pipeline-output/
+pipeline-outputs/
+pipeline-output*/
+pipeline-outputs*/
+
+# rixpress logs (keep dag.json + default_libraries.*)
+_rixpress/build_log_*.json
+
+# Optional local tooling
+.direnv/
 
